@@ -25,20 +25,17 @@ function App() {
     return demoUsers.filter(user => user.displayName !== currentUserDisplayName);
   };
 
-  // private chat key between two users
   const getChatKey = (user1, user2) => {
     const sorted = [user1, user2].sort();
     return `chat_${sorted[0]}_${sorted[1]}`;
   };
 
-  // Load messages for specific chat
   const loadChatMessages = (user1, user2) => {
     const chatKey = getChatKey(user1, user2);
     const stored = localStorage.getItem(chatKey);
     return stored ? JSON.parse(stored) : [];
   };
 
-  // Save messages for specific chat
   const saveChatMessages = (user1, user2, messages) => {
     const chatKey = getChatKey(user1, user2);
     localStorage.setItem(chatKey, JSON.stringify(messages));
@@ -58,11 +55,11 @@ function App() {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('currentUser', user.displayName);
       
+      // FIXED: Always use fresh demoUsers and filter out current user
       const filteredMembers = getFilteredMembers(user.displayName);
       setMembers(filteredMembers);
       localStorage.setItem('chatMembers', JSON.stringify(filteredMembers));
       
-      // Load user's own group messages
       // const groupKey = getChatKey(user.displayName, 'Everyone');
       const groupMessages = loadChatMessages(user.displayName, 'Everyone');
       setMessages(groupMessages);
@@ -141,7 +138,7 @@ function App() {
       const groupMessages = loadChatMessages(userDisplayName, 'Everyone');
       setMessages(groupMessages);
     }
-  },);
+  }, []);
 
   if (!isLoggedIn) {
     return (
@@ -216,7 +213,7 @@ function App() {
               
               return (
                 <div
-                  key={member.username} 
+                  key={member.username}
                   className={`member-item 
                     ${selectedMember === member.displayName ? 'member-selected' : ''} 
                     ${hasChat ? 'has-chat' : ''}`}
@@ -235,6 +232,7 @@ function App() {
             })}
           </div>
         </div>
+
         <div className="chat-area">
           <div className="chat-header-info">
             {selectedMember ? (
