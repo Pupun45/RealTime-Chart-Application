@@ -16,11 +16,11 @@ function App() {
   const messagesEndRef = useRef(null);
 
   const demoUsers = [
-    { username: 'admin', password: 'admin123', displayName: 'Admin User', avatar: '👑', status: 'online', color: '#10b981' },
-    { username: 'user', password: 'password', displayName: 'Regular User', avatar: '👤', status: 'online', color: '#3b82f6' },
-    { username: 'demo', password: 'demo123', displayName: 'Demo User', avatar: '⭐', status: 'online', color: '#f59e0b' },
-    { username: 'guest', password: 'guest123', displayName: 'Guest User', avatar: '👋', status: 'offline', color: '#6b7280' },
-    { username: 'support', password: 'support', displayName: 'Support Team', avatar: '🛠️', status: 'online', color: '#ef4444' }
+    { username: 'ram', password: 'ram123', displayName: 'RAM', avatar: '👑', status: 'online', color: '#10b981' },
+    { username: 'jyoti', password: 'jyoti123', displayName: 'JYOTI', avatar: '👤', status: 'online', color: '#3b82f6' },
+    { username: 'sarat', password: 'sarat123', displayName: 'SARAT', avatar: '⭐', status: 'online', color: '#f59e0b' },
+    { username: 'abhijeet', password: 'abhijeet123', displayName: 'ABHIJEET', avatar: '👋', status: 'offline', color: '#6b7280' },
+    { username: 'bharat', password: 'bharat123', displayName: 'BHARAT', avatar: '🛠️', status: 'online', color: '#ef4444' }
   ];
 
   // Get private chat key between two users
@@ -191,7 +191,7 @@ function App() {
           </form>
           
           <div className="demo-info">
-            Demo: admin/admin123 | user/password | demo/demo123 | guest/guest123 | support/support
+            Demo: bharat/bharat123 | abhijeet/abhijeet123 | sarat/sarat123 | jyoti/jyoti123 | ram/ram123
           </div>
         </div>
       </div>
