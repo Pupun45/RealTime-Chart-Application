@@ -23,6 +23,11 @@ function App() {
     { username: 'bharat', password: 'bharat123', displayName: 'BHARAT', avatar: '🛠️', status: 'online', color: '#ef4444' }
   ];
 
+  // FIXED: Filter out current user from members list and ensure proper data structure
+  const getFilteredMembers = (currentUserDisplayName) => {
+    return demoUsers.filter(user => user.displayName !== currentUserDisplayName);
+  };
+
   // Get private chat key between two users
   const getChatKey = (user1, user2) => {
     const sorted = [user1, user2].sort();
@@ -56,14 +61,10 @@ function App() {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('currentUser', user.displayName);
       
-      // Load all members
-      const storedMembers = localStorage.getItem('chatMembers');
-      if (storedMembers) {
-        setMembers(JSON.parse(storedMembers));
-      } else {
-        setMembers(demoUsers);
-        localStorage.setItem('chatMembers', JSON.stringify(demoUsers));
-      }
+      // FIXED: Always use fresh demoUsers and filter out current user
+      const filteredMembers = getFilteredMembers(user.displayName);
+      setMembers(filteredMembers);
+      localStorage.setItem('chatMembers', JSON.stringify(filteredMembers));
       
       // Load user's own group messages
       const groupKey = getChatKey(user.displayName, 'Everyone');
@@ -93,6 +94,8 @@ function App() {
     setMessages([]);
     setSelectedMember(null);
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('chatMembers'); // Clear corrupted members data
   };
 
   const handleSendMessage = (e) => {
@@ -107,7 +110,6 @@ function App() {
       time: new Date().toLocaleTimeString()
     };
 
-    // Save to private chat storage
     setMessages(prev => {
       const updated = [...prev, message];
       saveChatMessages(currentUser, recipient, updated);
@@ -119,8 +121,6 @@ function App() {
 
   const handleSelectMember = (member) => {
     setSelectedMember(member.displayName);
-    
-    // Load private messages between current user and selected member
     const privateMessages = loadChatMessages(currentUser, member.displayName);
     setMessages(privateMessages);
   };
@@ -135,18 +135,16 @@ function App() {
 
   useEffect(() => {
     const loggedIn = localStorage.getItem('isLoggedIn');
-    const user = localStorage.getItem('currentUser');
-    if (loggedIn && user) {
+    const userDisplayName = localStorage.getItem('currentUser');
+    if (loggedIn && userDisplayName) {
       setIsLoggedIn(true);
-      setCurrentUser(user);
+      setCurrentUser(userDisplayName);
       
-      const storedMembers = localStorage.getItem('chatMembers');
-      if (storedMembers) {
-        setMembers(JSON.parse(storedMembers));
-      }
+      // FIXED: Always regenerate proper members list
+      const filteredMembers = getFilteredMembers(userDisplayName);
+      setMembers(filteredMembers);
       
-      // Load group chat messages on login
-      const groupMessages = loadChatMessages(user, 'Everyone');
+      const groupMessages = loadChatMessages(userDisplayName, 'Everyone');
       setMessages(groupMessages);
     }
   }, []);
@@ -214,20 +212,18 @@ function App() {
       </header>
 
       <div className="chat-content">
-        {/* Members Sidebar */}
         <div className="members-sidebar">
           <div className="sidebar-header">
             <h3>Contacts ({members.length})</h3>
           </div>
           <div className="members-list">
             {members.map((member) => {
-              // Check if there's a private chat history
+              // FIXED: Now works correctly with proper member objects
               const hasChat = localStorage.getItem(getChatKey(currentUser, member.displayName));
-              const isOnline = member.status === 'online';
               
               return (
                 <div
-                  key={member.username}
+                  key={member.username} // Use username as key (unique)
                   className={`member-item 
                     ${selectedMember === member.displayName ? 'member-selected' : ''} 
                     ${hasChat ? 'has-chat' : ''}`}
@@ -247,7 +243,7 @@ function App() {
           </div>
         </div>
 
-        {/* Chat Area */}
+        {/* Rest of JSX remains same */}
         <div className="chat-area">
           <div className="chat-header-info">
             {selectedMember ? (
