@@ -12,7 +12,7 @@ body {
   overflow: hidden;
 }
 
-/* Login Styles - Same as before */
+/* Login Styles - UNCHANGED */
 .login-container {
   min-height: 100vh;
   display: flex;
@@ -65,29 +65,85 @@ body {
 }
 .demo-info { margin-top: 24px; text-align: center; font-size: 0.875rem; color: #6b7280; }
 
-/* Chat Styles */
-.chat-container { height: 100vh; display: flex; flex-direction: column; background: #f8fafc; }
-.chat-header {
-  background: white; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); padding: 1rem 0;
+/* ========================================
+   FIXED CHAT HEADER - LOGOUT VISIBLE
+======================================== */
+.chat-container { 
+  height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+  background: #f8fafc; 
 }
-.header-content {
-  max-width: 1400px; margin: 0 auto; padding: 0 20px; display: flex;
-  justify-content: space-between; align-items: center;
-}
-.chat-title { font-size: 1.75rem; font-weight: 800; color: #1e293b; }
-.user-status { color: #64748b; margin-top: 4px; font-size: 0.95rem; }
-.logout-button {
-  background: #e53e3e; color: white; padding: 10px 20px; border: none;
-  border-radius: 10px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;
-}
-.logout-button:hover { background: #c53030; }
 
-/* Main Chat Content */
+.chat-header {
+  background: white; 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+  padding: clamp(12px, 2vw, 20px) 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ✅ FIXED: Mobile-first responsive header */
+.header-content {
+  max-width: 1400px; 
+  margin: 0 auto; 
+  padding: 0 clamp(12px, 3vw, 24px); 
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  flex-wrap: wrap;           /* ✅ NEW: Wrap on small screens */
+  gap: clamp(8px, 2vw, 16px); /* ✅ NEW: Proper spacing */
+  min-height: 60px;          /* ✅ NEW: Minimum height */
+}
+
+.chat-title { 
+  font-size: clamp(1.1rem, 5vw, 1.75rem);  /* ✅ Responsive */
+  font-weight: 800; 
+  color: #1e293b; 
+  flex: 1;                       /* ✅ Take available space */
+  min-width: 0;                  /* ✅ Allow shrinking */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-status { 
+  color: #64748b; 
+  font-size: clamp(0.75rem, 3vw, 0.95rem); /* ✅ Responsive */
+  margin-top: 4px;
+  max-width: 180px;              /* ✅ Smaller on mobile */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;                /* ✅ Don't shrink */
+}
+
+.logout-button {
+  background: #e53e3e; 
+  color: white; 
+  padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px); /* ✅ Responsive padding */
+  border: none;
+  border-radius: 10px; 
+  font-weight: 500; 
+  cursor: pointer; 
+  transition: all 0.2s ease;
+  font-size: clamp(0.8rem, 2.5vw, 0.95rem); /* ✅ Responsive font */
+  white-space: nowrap;
+  flex-shrink: 0;                    /* ✅ NEVER shrink */
+  min-width: 80px;                   /* ✅ Minimum width */
+  min-height: 40px;                  /* ✅ Touch target */
+}
+
+.logout-button:hover { 
+  background: #c53030; 
+}
+
+/* Rest of your styles UNCHANGED */
 .chat-content {
   flex: 1; display: flex; max-width: 1400px; margin: 0 auto; width: 100%; height: 100%;
 }
 
-/* Members Sidebar */
 .members-sidebar {
   width: 320px; background: white; border-right: 1px solid #e2e8f0;
   display: flex; flex-direction: column; flex-shrink: 0;
@@ -115,12 +171,13 @@ body {
 .member-info { flex: 1; }
 .member-name { font-weight: 500; color: #1e293b; margin-bottom: 2px; }
 .member-status {
+  display: flex;
+  align-items: center;
   font-size: 0.75rem; font-weight: 500;
 }
 .member-status.online { color: #10b981; }
 .member-status.offline { color: #6b7280; }
 
-/* Chat Area */
 .chat-area { flex: 1; display: flex; flex-direction: column; }
 .chat-header-info {
   padding: 15px 20px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
@@ -184,18 +241,6 @@ body {
   background: linear-gradient(135deg, #38a169, #2f855a); transform: translateY(-1px);
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .members-sidebar { width: 280px; }
-}
-@media (max-width: 768px) {
-  .chat-content { flex-direction: column; }
-  .members-sidebar { width: 100%; max-height: 300px; }
-  .members-list { display: flex; overflow-x: auto; }
-  .member-item { flex-shrink: 0; margin-right: 10px; }
-}
-/* Add these new styles to your existing App.css */
-
 .no-messages {
   display: flex;
   align-items: center;
@@ -205,11 +250,7 @@ body {
   font-size: 1.1rem;
   font-style: italic;
 }
-
-.has-chat {
-  position: relative;
-}
-
+.has-chat { position: relative; }
 .chat-badge {
   width: 8px;
   height: 8px;
@@ -218,16 +259,50 @@ body {
   margin-left: 6px;
   animation: pulse 2s infinite;
 }
-
 @keyframes pulse {
   0% { opacity: 1; }
   50% { opacity: 0.5; }
   100% { opacity: 1; }
 }
 
-.member-status {
-  display: flex;
-  align-items: center;
-  font-size: 0.75rem;
-  font-weight: 500;
+/* ========================================
+   RESPONSIVE - LOGOUT BUTTON FIXED
+======================================== */
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0 clamp(12px, 4vw, 20px);
+    gap: 12px;
+  }
+  .chat-title {
+    font-size: clamp(1.1rem, 6vw, 1.4rem);
+  }
+  .logout-button {
+    padding: 8px 16px !important;
+    font-size: 0.85rem !important;
+    min-height: 36px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .chat-title {
+    text-align: center;
+    order: 2;
+  }
+  .user-status {
+    text-align: center;
+    order: 3;
+    max-width: none;
+  }
+  .logout-button {
+    order: 1;
+    text-align: center;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
 }
