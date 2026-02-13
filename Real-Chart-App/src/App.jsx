@@ -5,8 +5,6 @@ function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  
-  // Chat states
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [currentUser, setCurrentUser] = useState('');
@@ -23,12 +21,11 @@ function App() {
     { username: 'bharat', password: 'bharat123', displayName: 'BHARAT', avatar: '🛠️', status: 'online', color: '#ef4444' }
   ];
 
-  // FIXED: Filter out current user from members list and ensure proper data structure
   const getFilteredMembers = (currentUserDisplayName) => {
     return demoUsers.filter(user => user.displayName !== currentUserDisplayName);
   };
 
-  // Get private chat key between two users
+  // private chat key between two users
   const getChatKey = (user1, user2) => {
     const sorted = [user1, user2].sort();
     return `chat_${sorted[0]}_${sorted[1]}`;
@@ -61,13 +58,12 @@ function App() {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('currentUser', user.displayName);
       
-      // FIXED: Always use fresh demoUsers and filter out current user
       const filteredMembers = getFilteredMembers(user.displayName);
       setMembers(filteredMembers);
       localStorage.setItem('chatMembers', JSON.stringify(filteredMembers));
       
       // Load user's own group messages
-      const groupKey = getChatKey(user.displayName, 'Everyone');
+      // const groupKey = getChatKey(user.displayName, 'Everyone');
       const groupMessages = loadChatMessages(user.displayName, 'Everyone');
       setMessages(groupMessages);
       
@@ -95,7 +91,7 @@ function App() {
     setSelectedMember(null);
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('currentUser');
-    localStorage.removeItem('chatMembers'); // Clear corrupted members data
+    localStorage.removeItem('chatMembers'); 
   };
 
   const handleSendMessage = (e) => {
@@ -139,15 +135,13 @@ function App() {
     if (loggedIn && userDisplayName) {
       setIsLoggedIn(true);
       setCurrentUser(userDisplayName);
-      
-      // FIXED: Always regenerate proper members list
       const filteredMembers = getFilteredMembers(userDisplayName);
       setMembers(filteredMembers);
       
       const groupMessages = loadChatMessages(userDisplayName, 'Everyone');
       setMessages(groupMessages);
     }
-  }, []);
+  },);
 
   if (!isLoggedIn) {
     return (
@@ -218,12 +212,11 @@ function App() {
           </div>
           <div className="members-list">
             {members.map((member) => {
-              // FIXED: Now works correctly with proper member objects
               const hasChat = localStorage.getItem(getChatKey(currentUser, member.displayName));
               
               return (
                 <div
-                  key={member.username} // Use username as key (unique)
+                  key={member.username} 
                   className={`member-item 
                     ${selectedMember === member.displayName ? 'member-selected' : ''} 
                     ${hasChat ? 'has-chat' : ''}`}
@@ -242,8 +235,6 @@ function App() {
             })}
           </div>
         </div>
-
-        {/* Rest of JSX remains same */}
         <div className="chat-area">
           <div className="chat-header-info">
             {selectedMember ? (
